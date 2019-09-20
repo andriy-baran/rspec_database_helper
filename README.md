@@ -2,8 +2,6 @@
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rspec_database_helper`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -22,7 +20,29 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You can group `FactoryBot.create` definitions under `database` helper which supports handy syntax
+
+```ruby
+# user(:user, name: 'Bob') translates to let(:user) { FactoryBot.create(:user, name: 'Bob') }
+# user!(:user, name: 'Bob') translates to let!(:user) { FactoryBot.create(:user, name: 'Bob') }
+# user_list(:user, name: 'Bob', 3) translates to let(:user) { FactoryBot.create_list(:user, 3, name: 'Bob') }
+# user_list!(:user, name: 'Bob', 3) translates to let!(:user) { FactoryBot.create_list(:user, 3, name: 'Bob') }
+#
+RSpec.describe 'Subject' do
+  database do
+    company2!(:company, name: name, domain_name: domain, location: location_name)
+    company3!(:company, name: name2, domain_name: domain, location: location_name)
+    order1!(:order, :ordered, :with_items, items_count: 1, status: IN_QC, company_id: company3.id, delivered_at: Time.zone.now)
+    order2!(:order, :ordered, :with_items, items_count: 1, status: COMPLETED, company_id: company3.id, delivered_at: Time.zone.now, order_date: (Time.zone.now - 1.day))
+    order3!(:order, :ordered, :with_items, items_count: 1, status: NOT_READY, company_id: company3.id)
+  end
+
+  it 'has access to variables' do
+    # You can access objects here
+    # Don't forget to reload after changes
+  end
+end
+```
 
 ## Development
 
