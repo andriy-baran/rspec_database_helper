@@ -17,6 +17,18 @@ And then execute:
 Or install it yourself as:
 
     $ gem install rspec_database_helper
+    
+## Configuration
+
+Include helpers into RSpec
+
+```ruby
+# spec/rails_helper.rb
+
+RSpec.configure do |config|
+  config.include RspecDatabaseHelper
+end
+```
 
 ## Usage
 
