@@ -1,10 +1,14 @@
+require 'parser/current'
 require "rspec_database_helper/version"
 
 module RspecDatabaseHelper
   module ClassMethods
-    require 'parser/current'
+    def self.rewriter_class
+      return Parser::TreeRewriter if defined?(Parser::TreeRewriter)
+      return Parser::Rewriter if defined?(Parser::Rewriter)
+    end
 
-    class DatabaseDSLTranslator < ::Parser::TreeRewriter
+    class DatabaseDSLTranslator < rewriter_class
       def on_send(node)
         _, method_name, *args = node.children
 
