@@ -13,16 +13,18 @@ module RspecDatabaseHelper
         _, method_name, *args = node.children
 
         factory_attrs = args.map { |e| e.loc.expression.source }.join(', ')
+        factory_class = 'FactoryGirl' if defined?(FactoryGirl)
+        factory_class = 'FactoryBot' if defined?(FactoryBot)
 
         case method_name
         when /list!$/
-          replace(node.loc.expression, "let!(:#{method_name.to_s.sub(/_list!$/,'')}) { FactoryBot.create_list(#{factory_attrs}) }")
+          replace(node.loc.expression, "let!(:#{method_name.to_s.sub(/_list!$/,'')}) { #{factory_class}.create_list(#{factory_attrs}) }")
         when /list$/
-          replace(node.loc.expression, "let(:#{method_name.to_s.sub(/_list$/,'')}) { FactoryBot.create_list(#{factory_attrs}) }")
+          replace(node.loc.expression, "let(:#{method_name.to_s.sub(/_list$/,'')}) { #{factory_class}.create_list(#{factory_attrs}) }")
         when /!$/
-          replace(node.loc.expression, "let!(:#{method_name.to_s.sub(/!$/,'')}) { FactoryBot.create(#{factory_attrs}) }")
+          replace(node.loc.expression, "let!(:#{method_name.to_s.sub(/!$/,'')}) { #{factory_class}.create(#{factory_attrs}) }")
         else
-          replace(node.loc.expression, "let(:#{method_name}) { FactoryBot.create(#{factory_attrs}) }")
+          replace(node.loc.expression, "let(:#{method_name}) { #{factory_class}.create(#{factory_attrs}) }")
         end
       end
     end
